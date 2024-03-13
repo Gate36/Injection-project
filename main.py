@@ -34,7 +34,7 @@ def check_query(query, mid):
 
 
 def binary_search(low, high, query):
-    result = None  # 조건을 만족하는 최소 mid 값을 저장할 변수
+    result = None  # answer value
     while low <= high:
         mid = (low + high) // 2
         if check_query(query, mid):
