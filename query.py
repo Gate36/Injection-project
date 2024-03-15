@@ -22,6 +22,20 @@ def get_count(column, table):
     return countQuery
 
 
+def get_count_extend(column, table, condition):
+    countQuery = (
+        "(SELECT COUNT("
+        + column
+        + ") AS total_usernames FROM "
+        + table
+        + " WHERE table_name = '"
+        + condition
+        + "' ) > "
+    )
+
+    return countQuery
+
+
 def get_index(column, table):
     indexQuery = (
         "(SELECT length("
@@ -36,6 +50,22 @@ def get_index(column, table):
     return indexQuery
 
 
+def get_index_extend(column, table, condition):
+    indexQuery = (
+        "(SELECT length("
+        + column
+        + ") FROM (SELECT "
+        + column
+        + ", rownum as rnum FROM "
+        + table
+        + " WHERE table_name = '"
+        + condition
+        + "') WHERE rnum = {}) > "
+    )
+
+    return indexQuery
+
+
 def get_data(column, table):
     dataQuery = (
         "(SELECT ascii(substr("
@@ -45,6 +75,22 @@ def get_data(column, table):
         + ", rownum as rnum FROM "
         + table
         + ") WHERE rnum = {}) > "
+    )
+
+    return dataQuery
+
+
+def get_data_extend(column, table, condition):
+    dataQuery = (
+        "(SELECT ascii(substr("
+        + column
+        + ", {}, 1)) FROM (SELECT "
+        + column
+        + ", rownum as rnum FROM "
+        + table
+        + " WHERE table_name = '"
+        + condition
+        + "') WHERE rnum = {}) > "
     )
 
     return dataQuery
