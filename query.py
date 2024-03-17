@@ -1,7 +1,7 @@
 ### VAL AREA
 targetURL = "http://elms1.skinfosec.co.kr:8082/community6/free"
 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-cookies = {"JSESSIONID": "BD94BAFDFAEF2D74DACC9753ED20655F"}
+cookies = {"JSESSIONID": "3FFEB102DFC9DA3371BAF6689B50E51F"}
 data = {
     "startDt": "",
     "endDt": "",
