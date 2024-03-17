@@ -6,3 +6,17 @@
 컬럼 이름 추출 : extend(column_name, all_tab_columns, !!TABLE_NAME_INPUT!!)
 
 데이터 추출 : normal(!!COLUMN_NAME_INPUT!!, !!TABLE_NAME_INPUT!!)
+
+==============
+저장 형식
+
+{
+    "table 1" : {
+        "column 1": ["data 1", "data 2", ...],
+        "column 2": ["data 1", "data 2", ...],
+        "column 3": ["data 1", "data 2", ...]
+    }
+    "table 2"
+    "table 3"
+    ...
+}

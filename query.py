@@ -1,7 +1,7 @@
 ### VAL AREA
 targetURL = "http://elms1.skinfosec.co.kr:8082/community6/free"
 headers = {"Content-Type": "application/x-www-form-urlencoded"}
-cookies = {"JSESSIONID": "D736447B0E6D3A633EF0AD286A22861D"}
+cookies = {"JSESSIONID": "BD94BAFDFAEF2D74DACC9753ED20655F"}
 data = {
     "startDt": "",
     "endDt": "",
@@ -26,7 +26,7 @@ def get_count_extend(column, table, condition):
     countQuery = (
         "(SELECT COUNT("
         + column
-        + ") AS total_usernames FROM "
+        + ") FROM "
         + table
         + " WHERE table_name = '"
         + condition
