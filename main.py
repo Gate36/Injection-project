@@ -91,6 +91,8 @@ def main():
             [str(i) for i in range(1, len(table_names) + 1)] + ["Q"],
         )
         if user_input == "Q":
+            clear_screen()
+            print("Good Bye.")
             break
 
         selected_table = table_names[int(user_input) - 1]
@@ -124,6 +126,8 @@ def main():
             if column_input == "B":
                 break
             elif column_input == "Q":
+                clear_screen()
+                print("Good Bye.")
                 return
 
             selected_column = columns[int(column_input) - 1]
