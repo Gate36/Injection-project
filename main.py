@@ -8,6 +8,31 @@ def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
+def update_table_list(json_file_path):
+    current_data = load_data_from_json(json_file_path)
+    latest_tables = exploit.send_SQL("table_name", "user_tables")
+
+    for table in latest_tables:
+        if table not in current_data.keys():
+            current_data[table] = {}
+
+    save_data_to_json(json_file_path, current_data)
+
+
+def update_column_list(selected_table, json_file_path):
+    current_data = load_data_from_json(json_file_path)
+    if selected_table in current_data:
+        latest_columns = exploit.send_SQL(
+            "column_name", "all_tab_columns", selected_table
+        )
+
+        for column in latest_columns:
+            if column not in current_data[selected_table].keys():
+                current_data[selected_table][column] = []
+
+    save_data_to_json(json_file_path, current_data)
+
+
 def load_data_from_json(json_file_path):
     with open(json_file_path, "r") as file:
         return json.load(file)
@@ -86,16 +111,18 @@ def main():
         print_pretty_table(
             ["Index", "Table Name"], list(enumerate(table_names, start=1))
         )
-        user_input = get_user_input(
-            "Select a table (index) or 'Q' to quit: ",
-            [str(i) for i in range(1, len(table_names) + 1)] + ["Q"],
+        table_input = get_user_input(
+            "Select a table (index), 'R' to Reload, or 'Q' to quit: ",
+            [str(i) for i in range(1, len(table_names) + 1)] + ["R", "Q"],
         )
-        if user_input == "Q":
+        if table_input == "R":
+            update_table_list(json_file_path)
+        elif table_input == "Q":
             clear_screen()
             print("Good Bye.")
             break
 
-        selected_table = table_names[int(user_input) - 1]
+        selected_table = table_names[int(table_input) - 1]
         columns = list(data[selected_table].keys() if selected_table in data else [])
 
         while True:
@@ -120,8 +147,8 @@ def main():
                 ["Index", "Column Name"], list(enumerate(columns, start=1))
             )
             column_input = get_user_input(
-                "Select a column (index), 'B' to go back, or 'Q' to quit: ",
-                [str(i) for i in range(1, len(columns) + 1)] + ["B", "Q"],
+                "Select a column (index), 'B' to go back, 'R' to Reload, or 'Q' to quit: ",
+                [str(i) for i in range(1, len(columns) + 1)] + ["B", "R", "Q"],
             )
             if column_input == "B":
                 break
@@ -129,6 +156,9 @@ def main():
                 clear_screen()
                 print("Good Bye.")
                 return
+            elif column_input == "R":
+                update_column_list(selected_table, json_file_path)
+                continue
 
             selected_column = columns[int(column_input) - 1]
             column_data = (
@@ -159,13 +189,18 @@ def main():
                     ["Index", "Data"], list(enumerate(data_pages[page_index], start=1))
                 )
                 page_nav = get_user_input(
-                    "Press 'N' for next, 'P' for previous, 'B' to go back: ",
-                    ["N", "P", "B"],
+                    "Press 'N' for next, 'P' for previous, 'R' for Reload, 'B' to go back: ",
+                    ["N", "P", "R", "B"],
                 )
                 if page_nav == "N" and page_index < len(data_pages) - 1:
                     page_index += 1
                 elif page_nav == "P" and page_index > 0:
                     page_index -= 1
+                elif page_nav == "R":
+                    fetched_data = fetch_data_online(selected_table, selected_column)
+                    data[selected_table][selected_column] = list(fetched_data.values())
+                    save_data_to_json(json_file_path, data)
+                    column_data = data[selected_table][selected_column]
                 elif page_nav == "B":
                     break
 

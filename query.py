@@ -21,7 +21,7 @@ def set_cookies(new_cookies):
 
 def get_count(column, table):
     countQuery = (
-        "(SELECT COUNT(" + column + ") AS total_usernames FROM " + table + ") > "
+        "(SELECT COUNT(" + column + ") FROM " + table + ") > "
     )
 
     return countQuery
